@@ -30,7 +30,7 @@ const port = process.env.PORT || 3001;
 //     "was_downgraded": false,
 //     "plan": "blue"
 // }
-app.post('/chat', async(req: Request, res: Response) => {
+app.post('/chat', async (req: Request, res: Response) => {
     const { from_number, content, media_url } = req.body;
     console.log("Message: ", req.body)
 
@@ -73,7 +73,7 @@ app.post('/chat', async(req: Request, res: Response) => {
             await Conversations.continue(conversation.id, from_number)
             return res.status(200).json({ message: "Sent response to user" });
         }
-    } catch(error) {
+    } catch (error) {
         console.error("An error occurred when attempting to continue a conversation: ", error);
         return res.status(400).json({ error: (error as any).message })
     }
@@ -94,6 +94,8 @@ app.post('/register', async (req: Request, res: Response) => {
     }
 });
 
-app.listen(port, () => {
+app.listen(port, async () => {
     console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
+
+    await extract_name_and_number("https://storage.googleapis.com/inbound-file-store/RnNhPb2F_CARD_4395.vcf")
 });
