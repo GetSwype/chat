@@ -79,7 +79,11 @@ app.post('/chat', async(req: Request, res: Response) => {
     }
 });
 
-app.post('/register', async(req: Request, res: Response) => {
+app.get('/health', (req: Request, res: Response) => {
+    res.status(200).json({ message: "Server is running" })
+})
+
+app.post('/register', async (req: Request, res: Response) => {
     try {
         const { phone_number } = req.body;
         await Users.signup({ phone_number })
