@@ -5,22 +5,22 @@ import { Users } from './model/user';
 dotenv.config();
 
 const app: Express = express();
-const port = process.env.PORT;
+const port = process.env.PORT || 8080;
 
 
-app.post('/chat', (req: Request, res: Response) => {
-    const {  } = req.body;
+app.post('/chat', async(req: Request, res: Response) => {
+    const { } = req.body;
 });
 
-app.post('/register', (req: Request, res: Response) => {
+app.post('/register', async(req: Request, res: Response) => {
     try {
         const { phone_number } = req.body;
-        console.info("Registering user with phone number: " + phone_number);
-        Users.signup({ phone_number })
+        await Users.signup({ phone_number })
+        res.status(200).json({ message: "User registered successfully" })
     } catch (error) {
-        
+        console.error("An error occurred when attempting to register a user: ", error);
+        res.status(400).json({ error: (error as any).message })
     }
-    res.send('Express + TypeScript Server');
 });
 
 app.listen(port, () => {
