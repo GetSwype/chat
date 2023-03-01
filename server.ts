@@ -96,6 +96,4 @@ app.post('/register', async (req: Request, res: Response) => {
 
 app.listen(port, async () => {
     console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
-
-    await extract_name_and_number("https://storage.googleapis.com/inbound-file-store/RnNhPb2F_CARD_4395.vcf")
 });
