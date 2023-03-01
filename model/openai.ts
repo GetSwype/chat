@@ -25,10 +25,11 @@ export class OpenAI {
      * Takes an array of messages and gets a completion from OpenAI. Also stores the completion in the database.
      * @param messages An array of messages passed as context
      */
-    public async complete(messages: typeof Message[]): Promise<string> {
+    public async complete(messages: typeof Message[], phone_number: string): Promise<string> {
         const completion = await this._client.createChatCompletion({
-            model: "gpt-3.5-turbo",
+            model: "gpt-3.5-turbo-0301",
             messages: messages.map((message) => { return Messages.parse(message) }),
+            user: phone_number
         });
         console.log("Completion: ", completion.data.choices);
         await Messages.reverse_parse(completion.data.choices[0].message, messages[0].conversation_id);
