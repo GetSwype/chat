@@ -14,7 +14,6 @@ app.post('/chat', (req: Request, res: Response) => {
 app.post('/register', (req: Request, res: Response) => {
     const { phone_number } = req.body;
     console.info("Registering user with phone number: " + phone_number);
-
     
     res.send('Express + TypeScript Server');
 });

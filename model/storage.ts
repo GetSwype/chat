@@ -1,5 +1,11 @@
 import { PrismaClient } from '@prisma/client'
 
-const prisma = new PrismaClient()
+const Storage = {
+  instance: new PrismaClient(),
+};
 
-export { prisma }
+export type IDBClient = typeof Storage;
+
+Object.freeze(Storage);
+
+export default Storage;
