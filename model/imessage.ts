@@ -16,6 +16,11 @@ export class IMessage {
         this._client = new Sendblue(process.env.SENDBLUE_API_KEY!, process.env.SENDBLUE_API_SECRET!, {});
     }
 
+    /**
+     * Sends a message to a user through iMessage
+     * @param message A message object
+     * @param phone_number The users phone number
+     */
     public async send(message: Message, phone_number: string): Promise<void> {
         const response = await this._client.sendMessage({
             number: phone_number,

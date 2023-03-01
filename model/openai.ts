@@ -1,5 +1,5 @@
 const { Configuration, OpenAIApi } = require("openai");
-const { Messages } = require("./message");
+import { Messages } from "./message";
 const { Message } = require("@prisma/client");
 import dotenv from 'dotenv'
 
@@ -21,12 +21,17 @@ export class OpenAI {
         return OpenAI._instance;
     }
 
-    public async complete(messages: typeof Message[]): Promise<void> {
+    /**
+     * Takes an array of messages and gets a completion from OpenAI. Also stores the completion in the database.
+     * @param messages An array of messages passed as context
+     */
+    public async complete(messages: typeof Message[]): Promise<string> {
         const completion = await this._client.createChatCompletion({
             model: "gpt-3.5-turbo",
             messages: messages.map((message) => { return Messages.parse(message) }),
         });
-        console.log(completion.data.choices);
+        console.log("Completion: ", completion.data.choices);
         await Messages.reverse_parse(completion.data.choices[0].message, messages[0].conversation_id);
+        return completion.data.choices[0].text;
     }
 }

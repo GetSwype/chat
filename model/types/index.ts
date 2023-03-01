@@ -1,4 +1,4 @@
-export type OpenAIFormat {
+export type OpenAIFormat = {
     role: "user" | "system" | "assistant",
     content: string,
 }
