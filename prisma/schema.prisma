@@ -9,3 +9,28 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  phone_number String @id
+  premium     Boolean @default(false)
+  created_at  DateTime @default(now())
+  conversations Conversation[]
+}
+
+model Conversation {
+  id String @id @default(cuid())
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
+  messages Message[]
+  user User @relation(fields: [user_phone_number], references: [phone_number])
+  user_phone_number String
+}
+
+model Message {
+  id String @id @default(cuid())
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
+  text String
+  conversation Conversation @relation(fields: [conversation_id], references: [id])
+  conversation_id String
+}
