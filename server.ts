@@ -1,5 +1,6 @@
 import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
+import { Users } from './model/user';
 
 dotenv.config();
 
@@ -12,9 +13,13 @@ app.post('/chat', (req: Request, res: Response) => {
 });
 
 app.post('/register', (req: Request, res: Response) => {
-    const { phone_number } = req.body;
-    console.info("Registering user with phone number: " + phone_number);
-    
+    try {
+        const { phone_number } = req.body;
+        console.info("Registering user with phone number: " + phone_number);
+        Users.signup({ phone_number })
+    } catch (error) {
+        
+    }
     res.send('Express + TypeScript Server');
 });
 

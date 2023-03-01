@@ -26,11 +26,18 @@ model Conversation {
   user_phone_number String
 }
 
+enum Author {
+  user
+  assistant
+  system
+}
+
 model Message {
   id String @id @default(cuid())
   created_at DateTime @default(now())
   updated_at DateTime @default(now())
   text String
+  author Author
   conversation Conversation @relation(fields: [conversation_id], references: [id])
   conversation_id String
 }
