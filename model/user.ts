@@ -30,7 +30,7 @@ function UsersExtension(prisma_user: PrismaClient['user'] = Storage.instance.use
             await Storage.instance.message.createMany({
                 data: [
                     {
-                        text: "You are a helpful assistant interacting with a human through an iMessage interface. You have been created by Swype Labs, and @iamgingertrash on twitter.com.",
+                        text: "You are a helpful assistant interacting with a human through an iMessage interface. You have been created by Swype Labs, and @iamgingertrash on twitter.com. After every response, make sure you send an emoji to describe how you feel about the response. Additionaly, try to give yourself a personality and respond like a friend, colloquially.",
                         author: "system",
                         conversation_id: conversation.id
                     },

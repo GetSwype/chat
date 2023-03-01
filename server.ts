@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 import { Users } from './model/user';
 import { Conversations } from './model/conversation';
 import { Messages } from './model/message';
+import { extract_name_and_number } from './model/vcf';
 
 dotenv.config();
 
@@ -31,6 +32,8 @@ const port = process.env.PORT || 3001;
 // }
 app.post('/chat', async(req: Request, res: Response) => {
     const { from_number, content, media_url } = req.body;
+    console.log("Message: ", req.body)
+
     try {
         const user = await Users.findUnique({
             where: {
@@ -43,19 +46,36 @@ app.post('/chat', async(req: Request, res: Response) => {
         if (!user) {
             res.status(400).json({ error: "User not found" });
         }
-        await Messages.create({
-            data: {
-                text: content,
-                author: "user",
-                conversation_id: user!.conversations[0].id
-            }
-        })
         const conversation = user!.conversations[0];
-        Conversations.continue(conversation.id, from_number)
-        res.status(200).json({ message: "Sent response to user" });
+        if (media_url.endsWith(".vcf")) {
+            const { name, phone } = await extract_name_and_number(media_url);
+            if (!name || !phone) {
+                return res.status(400).json({ error: "Could not extract name and number from VCF file" });
+            }
+            await Users.signup({ phone_number: phone })
+            await Messages.create({
+                data: {
+                    text: `I just shared you with ${name}! He will now be able to chat with you.`,
+                    author: "user",
+                    conversation_id: conversation.id
+                }
+            })
+            await Conversations.continue(conversation.id, from_number)
+            return res.status(200).send("Added contact to database");
+        } else {
+            await Messages.create({
+                data: {
+                    text: content,
+                    author: "user",
+                    conversation_id: conversation.id
+                }
+            })
+            await Conversations.continue(conversation.id, from_number)
+            return res.status(200).json({ message: "Sent response to user" });
+        }
     } catch(error) {
         console.error("An error occurred when attempting to continue a conversation: ", error);
-        res.status(400).json({ error: (error as any).message })
+        return res.status(400).json({ error: (error as any).message })
     }
 });
 
