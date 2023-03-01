@@ -18,6 +18,6 @@ jobs:
         aws-region: us-east-1
     - uses: actions/checkout@v3
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag 908002020391.dkr.ecr.us-east-1.amazonaws.com/swypechat:latest
+      run: docker build . --file Dockerfile --tag 908002020391.dkr.ecr.us-east-1.amazonaws.com/swypechat:main
     - name: Push
-      run: docker push 908002020391.dkr.ecr.us-east-1.amazonaws.com/swypechat:latest
+      run: docker push 908002020391.dkr.ecr.us-east-1.amazonaws.com/swypechat:main
