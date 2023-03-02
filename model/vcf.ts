@@ -1,5 +1,4 @@
 const fs = require('fs');
-import vCard from 'vcf';
 const axis = require('axios');
 import vcardparser from 'vcardparser';
 

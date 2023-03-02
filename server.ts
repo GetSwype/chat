@@ -5,6 +5,7 @@ import { Users } from './model/user';
 import { Conversations } from './model/conversation';
 import { Messages } from './model/message';
 import { extract_name_and_number } from './model/vcf';
+import { IMessage } from './model/imessage';
 
 dotenv.config();
 
@@ -46,6 +47,25 @@ app.post('/chat', async (req: Request, res: Response) => {
         if (!user) {
             res.status(400).json({ error: "User not found" });
         }
+        if (!user.has_shared) {
+            await Messages.create({
+                data: {
+                    text: "You'll need to share at least 1 contact with me to start chatting! Head into your phone's contacts and share a contact with me who'd like to try out ChatGPT :)",
+                    author: "assistant",
+                    conversation_id: user.conversations[0].id
+                }
+            })
+            let message = await Messages.findFirst({
+                where: {
+                    conversation_id: user.conversations[0].id
+                },
+                orderBy: {
+                    created_at: "desc"
+                }
+            })
+            await IMessage.getInstance().send(message, from_number);
+            return res.status(200).send("Sent share contact message");
+        }
         const conversation = user!.conversations[0];
         if (media_url.endsWith(".vcf")) {
             const { name, phone } = await extract_name_and_number(media_url);
@@ -61,6 +81,14 @@ app.post('/chat', async (req: Request, res: Response) => {
                 }
             })
             await Conversations.continue(conversation.id, from_number)
+            await Users.update({
+                where: {
+                    phone_number: phone
+                },
+                data: {
+                    has_shared: true
+                }
+            })
             return res.status(200).send("Added contact to database");
         } else {
             await Messages.create({
