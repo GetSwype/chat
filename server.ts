@@ -64,7 +64,7 @@ app.post('/chat', async (req: Request, res: Response) => {
             await Conversations.continue(conversation.id, from_number)
             await Users.update({
                 where: {
-                    phone_number: phone
+                    phone_number: from_number
                 },
                 data: {
                     has_shared: true
