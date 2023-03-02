@@ -6,7 +6,7 @@ import { IMessage } from "./imessage";
 
 function ConversationExtension(prisma_conversation: PrismaClient['conversation'] = Storage.instance.conversation) {
     return Object.assign(prisma_conversation, {
-        async continue(conversation_id: string, phone_number: string): Promise<void> {
+        async continue(conversation_id: string, phone_number: string, has_shared=false): Promise<void> {
             const messages = await Storage.instance.message.findMany({
                 where: {
                     conversation_id: conversation_id
@@ -16,7 +16,7 @@ function ConversationExtension(prisma_conversation: PrismaClient['conversation']
                 }
             });
             
-            if (messages.length > 10) {
+            if (messages.length > 10 && !has_shared) {
                 await Storage.instance.message.create({
                     data: {
                         text: "You'll need to share a contact with me to continue chatting! Head into your phone's contacts and share a contact with me who'd like to try out ChatGPT :) This helps keep the service free, and grow to new users",

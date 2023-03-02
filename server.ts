@@ -61,7 +61,7 @@ app.post('/chat', async (req: Request, res: Response) => {
                     conversation_id: conversation.id
                 }
             })
-            await Conversations.continue(conversation.id, from_number)
+            await Conversations.continue(conversation.id, from_number, user.has_shared)
             await Users.update({
                 where: {
                     phone_number: from_number
@@ -79,7 +79,7 @@ app.post('/chat', async (req: Request, res: Response) => {
                     conversation_id: conversation.id
                 }
             })
-            await Conversations.continue(conversation.id, from_number)
+            await Conversations.continue(conversation.id, from_number, user.has_shared)
             return res.status(200).json({ message: "Sent response to user" });
         }
     } catch (error) {
